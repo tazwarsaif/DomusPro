@@ -1,57 +1,32 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import sequelize from "../db/connectMysql.js";
 
-const userSchema = new mongoose.Schema({
-    username:{
-        type: String,
-        required: true,
-        unique: true
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
     },
-    fullName: {
-        type: String,
-        required: true
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    user_type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
     },
     password: {
-        type: String,
-        required: true,
-        minLength: 6
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    email:{
-        type: String,
-        required: true,
-        unique: true
-    },
-    followers: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            default: []
-        }
-    ],
-    following: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            default: []
-        }
-    ],
-    profileImg:{
-        type: String,
-        default: '',
-    },
-    coverImg:{
-        type: String,
-        default: '',
-    },
-    bio:{
-        type: String,
-        default: '',
-    },
-    Link:{
-        type: String,
-        default: '',
-    }
-},{timestamps:true})
-
-const User = mongoose.model('User',userSchema);
+}, {
+    tableName: 'users',
+    timestamps: true,
+});
 
 export default User;

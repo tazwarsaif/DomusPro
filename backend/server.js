@@ -1,7 +1,7 @@
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import express from 'express';
-import connectMongoDB from './db/connectMongoDB.js';
+import sequelize from './db/connectMysql.js';
 import authRoutes from './routes/auth.routes.js';
 dotenv.config()
 const app = express()
@@ -12,7 +12,18 @@ app.use(cookieParser())
 
 app.use('/api/auth',authRoutes);
 
-app.listen(5000,()=>{
-    connectMongoDB();
-    console.log("Server is up and running")
-})
+(async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Database connection established successfully.');
+
+        await sequelize.sync({ alter: true });
+        console.log('All tables synchronized successfully.');
+        app.listen(5000,()=>{
+            console.log("Server is up and running")
+        })
+    } catch (error) {
+        console.error('Error connecting to the database:', error);
+    }
+})();
+
